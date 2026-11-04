@@ -105,7 +105,7 @@ fun Leyenda() {
             modifier = Modifier.padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Las casillas NORMAL no tienen regla, así que no salen en la leyenda
+
             listOf(SALIDA, RIO, LIANA, LEON, META).forEach { tipo ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -142,7 +142,7 @@ val mapa = listOf(
 
 )
 
-// Color, icono y regla de cada tipo de casilla (los usan Casilla y Leyenda)
+
 fun colorDe(tipo: TipoCasilla): Color = when (tipo) {
     RIO -> AzulRio
     NORMAL -> Arena
@@ -170,7 +170,7 @@ fun reglaDe(tipo: TipoCasilla): String = when (tipo) {
     NORMAL -> ""
 }
 
-// Número de cada casilla: el camino va en espiral desde la SALIDA (1) hasta la META (25)
+
 val numeros = listOf(
     5,  6,  7,  8,  9,
     4, 19, 20, 21, 10,
@@ -193,7 +193,7 @@ fun Tablero() {
         Box(
             modifier = Modifier.padding(10.dp)
         ) {
-            // Tres capas, una encima de otra: fondos de las casillas, camino y emojis
+
             Cuadricula { posicion, modifier ->
                 Casilla(mapa[posicion], numeros[posicion], modifier)
             }
@@ -205,7 +205,7 @@ fun Tablero() {
     }
 }
 
-// Coloca 25 elementos en 5 filas de 5; "contenido" decide qué se dibuja en cada posición
+
 @Composable
 fun Cuadricula(contenido: @Composable (posicion: Int, modifier: Modifier) -> Unit) {
     Column(
@@ -225,22 +225,21 @@ fun Cuadricula(contenido: @Composable (posicion: Int, modifier: Modifier) -> Uni
     }
 }
 
-// Línea discontinua del tablero que une las casillas en orden, del 1 al 25
+
 @Composable
 fun CaminoEspiral(modifier: Modifier = Modifier) {
     Canvas(modifier = modifier) {
-        val hueco = 6.dp.toPx()                 // el mismo spacedBy(6.dp) de las filas
-        val lado = (size.width - 4 * hueco) / 5 // tamaño de una casilla en píxeles
-
+        val hueco = 6.dp.toPx()
+        val lado = (size.width - 4 * hueco) / 5
         fun centro(posicion: Int) = Offset(
             x = (posicion % 5) * (lado + hueco) + lado / 2,
             y = (posicion / 5) * (lado + hueco) + lado / 2
         )
 
-        // Posiciones ordenadas por su número: primero la del 1, luego la del 2...
+
         val puntos = (0 until 25).sortedBy { numeros[it] }.map { centro(it) }
 
-        // La flecha se para antes del centro de la meta para no tapar el diamante
+
         val penultimo = puntos[puntos.size - 2]
         val direccion = (puntos.last() - penultimo) / (puntos.last() - penultimo).getDistance()
         val punta = puntos.last() - direccion * (lado * 0.3f)
@@ -264,7 +263,6 @@ fun CaminoEspiral(modifier: Modifier = Modifier) {
             )
         )
 
-        // Punta de flecha: un triángulo apuntando hacia la meta
         val perpendicular = Offset(-direccion.y, direccion.x) * 8.dp.toPx()
         val flecha = Path().apply {
             moveTo(punta.x, punta.y)
@@ -309,7 +307,7 @@ fun Casilla(tipo: TipoCasilla, numero: Int, modifier: Modifier = Modifier){
 
 }
 
-// Solo el emoji de la casilla, sin fondo: va en la capa de arriba, encima del camino
+
 @Composable
 fun IconoCasilla(tipo: TipoCasilla, modifier: Modifier = Modifier) {
     Box(
